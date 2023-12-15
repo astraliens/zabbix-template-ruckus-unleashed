@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2023-12-15T17:10:36Z'
+  date: '2023-12-15T17:26:13Z'
   groups:
     - uuid: 7df96b18c230490a9a0a9e2307226338
       name: Templates
@@ -346,6 +346,12 @@ zabbix_export:
                   value: '{#SNMPVALUE}'
                 - tag: Application
                   value: 'Acces Points'
+              trigger_prototypes:
+                - uuid: 2d751fa967eb4971b9728ac38d273f4d
+                  expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedWLANAPRole[{#SNMPINDEX}],#1)<>last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedWLANAPRole[{#SNMPINDEX}],#2)'
+                  name: 'Acces Point {#SNMPVALUE} Role Changed'
+                  priority: AVERAGE
+                  manual_close: 'YES'
             - uuid: c1e006746747492885c310be750cf3ed
               name: 'AP State [{#SNMPVALUE}]'
               type: SNMP_AGENT
@@ -360,6 +366,14 @@ zabbix_export:
                   value: '{#SNMPVALUE}'
                 - tag: Application
                   value: 'Acces Points'
+              trigger_prototypes:
+                - uuid: ea050d902b754a32b64eac70b319fb94
+                  expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedWLANAPStatus[{#SNMPINDEX}])=0'
+                  recovery_mode: RECOVERY_EXPRESSION
+                  recovery_expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedWLANAPStatus[{#SNMPINDEX}])=1'
+                  name: 'Acces Point {#SNMPVALUE} Disconnected'
+                  priority: AVERAGE
+                  manual_close: 'YES'
             - uuid: 059790940d8549a685c0a024764e3fc3
               name: 'AP Uptime [{#SNMPVALUE}]'
               type: SNMP_AGENT
@@ -376,52 +390,13 @@ zabbix_export:
                   value: '{#SNMPVALUE}'
                 - tag: Application
                   value: 'Acces Points'
-        - uuid: 38496ba8066f4703945cbdebe1f51085
-          name: 'Ruckus APs'
-          type: SNMP_AGENT
-          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.2]'
-          key: 'APindex-[{#SNMPVALUE}]'
-          delay: '3600'
-          lifetime: 1d
-          item_prototypes:
-            - uuid: 35161c1d17434bebb3f708a81c1de707
-              name: 'AP Name $1'
-              type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.2.6.{#SNMPINDEX}'
-              key: 'ruckusAPName[{#SNMPVALUE}]'
-              delay: '60'
-              trends: '0'
-              value_type: CHAR
-              valuemap:
-                name: RuckusAPStatus
-              tags:
-                - tag: Application
-                  value: 'Acces Points'
-            - uuid: dc87d4fe6e3a44c19920683fb65197ef
-              name: 'AP $1 : Auth Clients'
-              type: SNMP_AGENT
-              snmp_oid: '1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.15.{#SNMPINDEX}'
-              key: 'ruckusZDWLANAPNumSta[{#SNMPVALUE}]'
-              delay: '60'
-              units: Users
-            - uuid: c3780f3749314a1587437e0c70d9beb3
-              name: 'AP Status $1'
-              type: SNMP_AGENT
-              snmp_oid: '.1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.3.{#SNMPINDEX}'
-              key: 'ruckusZDWLANAPStatus[{#SNMPVALUE}]'
-              delay: '60'
-              trends: '0'
-              value_type: CHAR
-              valuemap:
-                name: RuckusAPStatus
-              tags:
-                - tag: Application
-                  value: 'Acces Points'
               trigger_prototypes:
-                - uuid: 0aeef37e04b34b518156f0aac11fc934
-                  expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusZDWLANAPStatus[{#SNMPVALUE}])=0'
-                  name: 'Acces Point {#SNMPVALUE} is Offline'
+                - uuid: b005cd0416ac4d8e94f47cc7f06a716c
+                  expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedWLANAPUptime[{#SNMPINDEX}])<10m'
+                  name: 'Acces Point {#SNMPVALUE} Restarted'
                   priority: AVERAGE
+                  description: 'The host uptime is less than 10 minutes'
+                  manual_close: 'YES'
       valuemaps:
         - uuid: a643a0696d0c40c4811393c8379c00ab
           name: 'AP Role'
