@@ -1,0 +1,473 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-12-15T17:10:36Z'
+  groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: a19f1d3ddc234e06b4d7c9303fdbdb62
+      template: 'Template SNMP Ruckus UnLeashed'
+      name: 'Template SNMP Ruckus UnLeashed'
+      groups:
+        - name: Templates
+      items:
+        - uuid: 86e7132fbc2542b3bfe102657ed645fa
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          delay: '60'
+          history: 7d
+          valuemap:
+            name: 'Service state'
+          tags:
+            - tag: Application
+              value: ICMP
+          triggers:
+            - uuid: 33f269d9d1c643a1ad6c20ca6cea2c9c
+              expression: 'max(/Template SNMP Ruckus UnLeashed/icmpping,#3)=0'
+              name: '{HOST.NAME} is unavailable by ICMP'
+              priority: AVERAGE
+        - uuid: 09f59d2a195f4897801e5783af6761de
+          name: 'ICMP loss'
+          type: SIMPLE
+          key: icmppingloss
+          delay: '60'
+          history: 7d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: Application
+              value: ICMP
+          triggers:
+            - uuid: 6d731e71798c4846abba2c17daf9e8ac
+              expression: 'min(/Template SNMP Ruckus UnLeashed/icmppingloss,5m)>20'
+              name: 'Ping loss is too high on {HOST.NAME}'
+              priority: WARNING
+              dependencies:
+                - name: '{HOST.NAME} is unavailable by ICMP'
+                  expression: 'max(/Template SNMP Ruckus UnLeashed/icmpping,#3)=0'
+        - uuid: 82888319d0384189b74c74647d9ee9c3
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          delay: '60'
+          history: 7d
+          value_type: FLOAT
+          units: s
+          tags:
+            - tag: Application
+              value: ICMP
+          triggers:
+            - uuid: 8f7501d664fc4a9ab4d02c3ec0d3eeb6
+              expression: 'avg(/Template SNMP Ruckus UnLeashed/icmppingsec,5m)>0.5'
+              name: 'Response time is too high on {HOST.NAME}'
+              priority: WARNING
+              dependencies:
+                - name: '{HOST.NAME} is unavailable by ICMP'
+                  expression: 'max(/Template SNMP Ruckus UnLeashed/icmpping,#3)=0'
+        - uuid: b0dba53abc054034bc685bbbe1c1ef26
+          name: IP
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.2.0
+          key: ruckusUnleashedSystemAPIP
+          delay: '3600'
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: General
+        - uuid: 9c4dc812cd4043ebb91ce7f43deed6f3
+          name: 'Max Access Point Supported'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.12.0
+          key: ruckusUnleashedSystemLicensedAPs
+          delay: '3600'
+          tags:
+            - tag: Application
+              value: General
+        - uuid: 392c90de73d847848d5a8303fe04a4a3
+          name: 'Max Connections'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.13.0
+          key: ruckusUnleashedSystemMaxSta
+          delay: '3600'
+          tags:
+            - tag: Application
+              value: General
+        - uuid: 18ffd48fa3a34d2886c9cd7da3e69f11
+          name: Model
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.9.0
+          key: ruckusUnleashedSystemModel
+          delay: '3600'
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: General
+        - uuid: e8c19cd90ba840119debd406fcc3bbd9
+          name: 'Serial Number'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.15.0
+          key: ruckusUnleashedSystemSerialNumber
+          delay: '3600'
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: General
+        - uuid: 1f026e983d9c41cf92c6b74c2de9b642
+          name: 'CPU Utilized'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.13.0
+          key: ruckusUnleashedSystemStatsCPUUtil
+          delay: '60'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: 8539325f87734da094cfc43f1ac87927
+          name: 'Memory Utilization'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.14.0
+          key: ruckusUnleashedSystemStatsMemoryUtil
+          delay: '3600'
+          value_type: FLOAT
+          units: '%'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: 6ee47ae242e74808afc1d0638a8720a8
+          name: 'Number of Access Point'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.1.0
+          key: ruckusUnleashedSystemStatsNumAP
+          delay: '30'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+          triggers:
+            - uuid: 9d8947c1eac84aa6a3e724179455858b
+              expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedSystemStatsNumAP)<>20'
+              name: 'Rukus Access Point Offline'
+              priority: AVERAGE
+        - uuid: c302dab54b8146b6837ae610720717d2
+          name: 'Users Connected'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.2.0
+          key: ruckusUnleashedSystemStatsNumSta
+          delay: '30'
+          units: Users
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: c7b957588a94470881ac26bca87459bd
+          name: 'Number of Registered Access Points'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.15.0
+          key: ruckusUnleashedSystemStatsTotalAP
+          delay: '30'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: 7f65705b24e349d8a8ad91fa9ab2a260
+          name: 'Total Users Connected'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.30.0
+          key: ruckusUnleashedSystemStatsTotalNumSta
+          delay: '30'
+          units: Users
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: 26613cafab324d4c964944c8aa64be06
+          name: 'Associations Failed'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.16.0
+          key: ruckusUnleashedSystemStatsWLANTotalAssocFail
+          delay: '3600'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
+        - uuid: d747c95a8c4e4fb4ba1652980ef6b1bc
+          name: 'WLAN Total Rx Bytes'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.6.0
+          key: ruckusUnleashedSystemStatsWLANTotalRxBytes
+          delay: '30'
+          units: bps
+          description: 'Total received bytes of wireless interfaces'
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          tags:
+            - tag: component
+              value: network
+        - uuid: f2bbe5d409ea4950a51e1120ea4b2026
+          name: 'WLAN Total Tx Bytes'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.9.0
+          key: ruckusUnleashedSystemStatsWLANTotalTxBytes
+          delay: '30'
+          units: bps
+          description: 'Total transmitted bytes of wireless interfaces'
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          tags:
+            - tag: component
+              value: network
+        - uuid: f035d2c915804363b8ea052be2778241
+          name: 'WLAN Total Tx Fail'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.11.0
+          key: ruckusUnleashedSystemStatsWLANTotalTxFail
+          delay: '30'
+          units: packet
+          description: 'Total transmitted fail packets of wireless interfaces'
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          tags:
+            - tag: component
+              value: network
+        - uuid: d477800171034695bcfae3b4041bdd3a
+          name: 'WLAN Total Tx Retry'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.12.0
+          key: ruckusUnleashedSystemStatsWLANTotalTxRetry
+          delay: '30'
+          units: packet
+          description: 'Total transmitted retry packets of wireless interfaces'
+          preprocessing:
+            - type: CHANGE_PER_SECOND
+              parameters:
+                - ''
+          tags:
+            - tag: component
+              value: network
+        - uuid: 643da7550cc34a279c595f62eb819924
+          name: 'Firmware Version'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.18.0
+          key: ruckusUnleashedSystemVersion
+          delay: '3600'
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: General
+        - uuid: 7f8ffc3f69804adaba88ae9296105d41
+          name: 'Device name'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.1.0
+          key: sysName
+          delay: '3600'
+          trends: '0'
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: General
+        - uuid: f65b6ead3bcc434892ca68511a9950cd
+          name: 'Device uptime'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.8.0
+          key: sysUpTime
+          delay: '3600'
+          history: 7d
+          units: uptime
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: General
+      discovery_rules:
+        - uuid: f3e125440d854b51a2298d7ac6d43d79
+          name: 'Ruckus APs List'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.2.6]'
+          key: 'AP-[{#SNMPINDEX}]'
+          delay: '3600'
+          lifetime: 1d
+          item_prototypes:
+            - uuid: 1d8284bfcc1348e4be1880fd11c022a9
+              name: 'AP Name ({#SNMPINDEX})'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.2.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPDescription[{#SNMPINDEX}]'
+              trends: '0'
+              value_type: TEXT
+              description: 'AP Name'
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: 3b0d1554f4a3441486a2b3a075d7a3e2
+              name: 'AP MAC Addr [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.1.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPMacAddr[{#SNMPINDEX}]'
+              trends: '0'
+              value_type: TEXT
+              description: 'AP Mac Address'
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: cdcb6b140143458eac67607cbbc3d7fa
+              name: 'AP Model [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.4.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPModel[{#SNMPINDEX}]'
+              trends: '0'
+              value_type: TEXT
+              description: 'Model name'
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: e5cad0f2265146c594ca0be0567bbc4b
+              name: 'AP Role [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.9.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPRole[{#SNMPINDEX}]'
+              description: 'AP role, master or member AP'
+              valuemap:
+                name: 'AP Role'
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: c1e006746747492885c310be750cf3ed
+              name: 'AP State [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.3.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPStatus[{#SNMPINDEX}]'
+              delay: 30s
+              description: 'The connection status with Unleashed.'
+              valuemap:
+                name: RuckusAPStatus
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: 059790940d8549a685c0a024764e3fc3
+              name: 'AP Uptime [{#SNMPVALUE}]'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.6.6.{#SNMPINDEX}'
+              key: 'ruckusUnleashedWLANAPUptime[{#SNMPINDEX}]'
+              units: uptime
+              description: 'Model name'
+              preprocessing:
+                - type: MULTIPLIER
+                  parameters:
+                    - '0.01'
+              tags:
+                - tag: AP
+                  value: '{#SNMPVALUE}'
+                - tag: Application
+                  value: 'Acces Points'
+        - uuid: 38496ba8066f4703945cbdebe1f51085
+          name: 'Ruckus APs'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.2]'
+          key: 'APindex-[{#SNMPVALUE}]'
+          delay: '3600'
+          lifetime: 1d
+          item_prototypes:
+            - uuid: 35161c1d17434bebb3f708a81c1de707
+              name: 'AP Name $1'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.2.6.{#SNMPINDEX}'
+              key: 'ruckusAPName[{#SNMPVALUE}]'
+              delay: '60'
+              trends: '0'
+              value_type: CHAR
+              valuemap:
+                name: RuckusAPStatus
+              tags:
+                - tag: Application
+                  value: 'Acces Points'
+            - uuid: dc87d4fe6e3a44c19920683fb65197ef
+              name: 'AP $1 : Auth Clients'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.15.{#SNMPINDEX}'
+              key: 'ruckusZDWLANAPNumSta[{#SNMPVALUE}]'
+              delay: '60'
+              units: Users
+            - uuid: c3780f3749314a1587437e0c70d9beb3
+              name: 'AP Status $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.25053.1.2.2.1.1.2.1.1.3.{#SNMPINDEX}'
+              key: 'ruckusZDWLANAPStatus[{#SNMPVALUE}]'
+              delay: '60'
+              trends: '0'
+              value_type: CHAR
+              valuemap:
+                name: RuckusAPStatus
+              tags:
+                - tag: Application
+                  value: 'Acces Points'
+              trigger_prototypes:
+                - uuid: 0aeef37e04b34b518156f0aac11fc934
+                  expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusZDWLANAPStatus[{#SNMPVALUE}])=0'
+                  name: 'Acces Point {#SNMPVALUE} is Offline'
+                  priority: AVERAGE
+      valuemaps:
+        - uuid: a643a0696d0c40c4811393c8379c00ab
+          name: 'AP Role'
+          mappings:
+            - value: '0'
+              newvalue: member
+            - value: '1'
+              newvalue: Master
+        - uuid: d008df6ef75345f48581333408d7c615
+          name: RuckusAPStatus
+          mappings:
+            - value: '0'
+              newvalue: Disconnected
+            - value: '1'
+              newvalue: Connected
+            - value: '2'
+              newvalue: ApprovalPending
+            - value: '3'
+              newvalue: UpgradingFirmware
+            - value: '4'
+              newvalue: Provisioning
+        - uuid: 874e8d8a0e75486a91c0071a6a558790
+          name: 'Service state'
+          mappings:
+            - value: '0'
+              newvalue: Down
+            - value: '1'
+              newvalue: Up
+  graphs:
+    - uuid: 19e222ebf42642c8a84db59cf7f988ae
+      name: 'Ping Graph'
+      graph_items:
+        - color: DD0000
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: icmppingloss
+        - sortorder: '1'
+          color: 00CC00
+          yaxisside: RIGHT
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: icmppingsec
+    - uuid: 4b09c01779fd4dafa48bb0fe753673d7
+      name: 'Total Users'
+      graph_items:
+        - color: EE0000
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsNumSta
