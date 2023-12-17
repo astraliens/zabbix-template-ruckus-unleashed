@@ -1,6 +1,6 @@
 zabbix_export:
   version: '6.0'
-  date: '2023-12-15T17:26:13Z'
+  date: '2023-12-17T09:22:37Z'
   groups:
     - uuid: 7df96b18c230490a9a0a9e2307226338
       name: Templates
@@ -76,6 +76,16 @@ zabbix_export:
           tags:
             - tag: Application
               value: General
+        - uuid: ac30fc52d3ee4cd0a0e82431fd51fba0
+          name: 'Total APs Capacity'
+          type: CALCULATED
+          key: ruckusUnleashedSystemAPsLoad
+          value_type: FLOAT
+          units: '%'
+          params: 'round(100 * last(//ruckusUnleashedSystemStatsTotalAP) / last(//ruckusUnleashedSystemLicensedAPs),1)'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
         - uuid: 9c4dc812cd4043ebb91ce7f43deed6f3
           name: 'Max Access Point Supported'
           type: SNMP_AGENT
@@ -116,6 +126,16 @@ zabbix_export:
           tags:
             - tag: Application
               value: General
+        - uuid: 39a0dfd1c59d40fe9d181b6113eabfd5
+          name: 'Total Users Capacity'
+          type: CALCULATED
+          key: ruckusUnleashedSystemStaLoad
+          value_type: FLOAT
+          units: '%'
+          params: 'round(100 * last(//ruckusUnleashedSystemStatsTotalNumSta) / last(//ruckusUnleashedSystemMaxSta),1)'
+          tags:
+            - tag: Application
+              value: 'Acces Points'
         - uuid: 1f026e983d9c41cf92c6b74c2de9b642
           name: 'CPU Utilized'
           type: SNMP_AGENT
@@ -426,6 +446,35 @@ zabbix_export:
             - value: '1'
               newvalue: Up
   graphs:
+    - uuid: 3c09124df41a41afbd27551e47361f38
+      name: 'Network Bandwidth'
+      percent_left: '90'
+      graph_items:
+        - color: 80FF00
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsWLANTotalRxBytes
+        - sortorder: '1'
+          color: 03A9F4
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsWLANTotalTxBytes
+        - sortorder: '2'
+          color: F63100
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsWLANTotalTxFail
+        - sortorder: '3'
+          color: BF00FF
+          yaxisside: RIGHT
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsWLANTotalTxRetry
     - uuid: 19e222ebf42642c8a84db59cf7f988ae
       name: 'Ping Graph'
       graph_items:
@@ -446,3 +495,45 @@ zabbix_export:
           item:
             host: 'Template SNMP Ruckus UnLeashed'
             key: ruckusUnleashedSystemStatsNumSta
+    - uuid: da6e304cd3f2466eb2d119e5784289ab
+      name: 'Unleashed Connected APs'
+      width: '400'
+      yaxismax: '0'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      type: EXPLODED
+      show_3d: 'YES'
+      graph_items:
+        - color: FF0000
+          calc_fnc: LAST
+          type: GRAPH_SUM
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsTotalAP
+        - sortorder: '1'
+          color: BFFF00
+          calc_fnc: LAST
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsNumAP
+    - uuid: 9b0dbbada66c4083950e9a91daad151c
+      name: 'Unleashed Users Capacity'
+      width: '400'
+      yaxismax: '0'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      type: PIE
+      show_3d: 'YES'
+      graph_items:
+        - color: FB8C00
+          calc_fnc: LAST
+          type: GRAPH_SUM
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemMaxSta
+        - sortorder: '1'
+          color: BFFF00
+          calc_fnc: LAST
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsTotalNumSta
