@@ -1,7 +1,6 @@
 zabbix_export:
-  version: '6.0'
-  date: '2023-12-17T09:22:37Z'
-  groups:
+  version: '7.0'
+  template_groups:
     - uuid: 7df96b18c230490a9a0a9e2307226338
       name: Templates
   templates:
@@ -71,8 +70,9 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.2.0
           key: ruckusUnleashedSystemAPIP
           delay: '3600'
-          trends: '0'
+          history: 90d
           value_type: CHAR
+          trends: '0'
           tags:
             - tag: Application
               value: General
@@ -80,6 +80,7 @@ zabbix_export:
           name: 'Total APs Capacity'
           type: CALCULATED
           key: ruckusUnleashedSystemAPsLoad
+          history: 90d
           value_type: FLOAT
           units: '%'
           params: 'round(100 * last(//ruckusUnleashedSystemStatsTotalAP) / last(//ruckusUnleashedSystemLicensedAPs),1)'
@@ -92,6 +93,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.12.0
           key: ruckusUnleashedSystemLicensedAPs
           delay: '3600'
+          history: 90d
           tags:
             - tag: Application
               value: General
@@ -101,6 +103,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.13.0
           key: ruckusUnleashedSystemMaxSta
           delay: '3600'
+          history: 90d
           tags:
             - tag: Application
               value: General
@@ -110,8 +113,9 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.9.0
           key: ruckusUnleashedSystemModel
           delay: '3600'
-          trends: '0'
+          history: 90d
           value_type: CHAR
+          trends: '0'
           tags:
             - tag: Application
               value: General
@@ -121,8 +125,9 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.15.0
           key: ruckusUnleashedSystemSerialNumber
           delay: '3600'
-          trends: '0'
+          history: 90d
           value_type: CHAR
+          trends: '0'
           tags:
             - tag: Application
               value: General
@@ -130,38 +135,59 @@ zabbix_export:
           name: 'Total Users Capacity'
           type: CALCULATED
           key: ruckusUnleashedSystemStaLoad
+          history: 90d
           value_type: FLOAT
           units: '%'
           params: 'round(100 * last(//ruckusUnleashedSystemStatsTotalNumSta) / last(//ruckusUnleashedSystemMaxSta),1)'
           tags:
             - tag: Application
               value: 'Acces Points'
+          triggers:
+            - uuid: 4b25e528e58e41d4a24273bfea0bd9aa
+              expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedSystemStaLoad,#3)>=80'
+              name: 'Too many users connected'
+              priority: AVERAGE
         - uuid: 1f026e983d9c41cf92c6b74c2de9b642
           name: 'CPU Utilized'
           type: SNMP_AGENT
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.13.0
           key: ruckusUnleashedSystemStatsCPUUtil
           delay: '60'
+          history: 90d
           tags:
             - tag: Application
               value: 'Acces Points'
+          triggers:
+            - uuid: 83a1235be9864d80b37376a86acb19d0
+              expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedSystemStatsCPUUtil,#3)>=85'
+              name: 'High CPU Usage'
+              priority: HIGH
+              manual_close: 'YES'
         - uuid: 8539325f87734da094cfc43f1ac87927
           name: 'Memory Utilization'
           type: SNMP_AGENT
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.14.0
           key: ruckusUnleashedSystemStatsMemoryUtil
           delay: '3600'
+          history: 90d
           value_type: FLOAT
           units: '%'
           tags:
             - tag: Application
               value: 'Acces Points'
+          triggers:
+            - uuid: c19f03c2545b4c3080ce4f3f59cabdbb
+              expression: 'last(/Template SNMP Ruckus UnLeashed/ruckusUnleashedSystemStatsMemoryUtil,#2)>=92'
+              name: 'High Memory Usage'
+              priority: HIGH
+              manual_close: 'YES'
         - uuid: 6ee47ae242e74808afc1d0638a8720a8
           name: 'Number of Access Point'
           type: SNMP_AGENT
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.1.0
           key: ruckusUnleashedSystemStatsNumAP
           delay: '30'
+          history: 90d
           tags:
             - tag: Application
               value: 'Acces Points'
@@ -176,6 +202,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.2.0
           key: ruckusUnleashedSystemStatsNumSta
           delay: '30'
+          history: 90d
           units: Users
           tags:
             - tag: Application
@@ -186,6 +213,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.15.0
           key: ruckusUnleashedSystemStatsTotalAP
           delay: '30'
+          history: 90d
           tags:
             - tag: Application
               value: 'Acces Points'
@@ -195,6 +223,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.30.0
           key: ruckusUnleashedSystemStatsTotalNumSta
           delay: '30'
+          history: 90d
           units: Users
           tags:
             - tag: Application
@@ -205,6 +234,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.16.0
           key: ruckusUnleashedSystemStatsWLANTotalAssocFail
           delay: '3600'
+          history: 90d
           tags:
             - tag: Application
               value: 'Acces Points'
@@ -214,6 +244,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.6.0
           key: ruckusUnleashedSystemStatsWLANTotalRxBytes
           delay: '30'
+          history: 90d
           units: bps
           description: 'Total received bytes of wireless interfaces'
           preprocessing:
@@ -229,6 +260,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.9.0
           key: ruckusUnleashedSystemStatsWLANTotalTxBytes
           delay: '30'
+          history: 90d
           units: bps
           description: 'Total transmitted bytes of wireless interfaces'
           preprocessing:
@@ -244,6 +276,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.11.0
           key: ruckusUnleashedSystemStatsWLANTotalTxFail
           delay: '30'
+          history: 90d
           units: packet
           description: 'Total transmitted fail packets of wireless interfaces'
           preprocessing:
@@ -259,6 +292,7 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.15.12.0
           key: ruckusUnleashedSystemStatsWLANTotalTxRetry
           delay: '30'
+          history: 90d
           units: packet
           description: 'Total transmitted retry packets of wireless interfaces'
           preprocessing:
@@ -274,8 +308,9 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.18.0
           key: ruckusUnleashedSystemVersion
           delay: '3600'
-          trends: '0'
+          history: 90d
           value_type: CHAR
+          trends: '0'
           tags:
             - tag: Application
               value: General
@@ -285,8 +320,9 @@ zabbix_export:
           snmp_oid: 1.3.6.1.4.1.25053.1.15.1.1.1.1.1.0
           key: sysName
           delay: '3600'
-          trends: '0'
+          history: 90d
           value_type: CHAR
+          trends: '0'
           tags:
             - tag: Application
               value: General
@@ -313,14 +349,16 @@ zabbix_export:
           key: 'AP-[{#SNMPINDEX}]'
           delay: '3600'
           lifetime: 1d
+          enabled_lifetime_type: DISABLE_NEVER
           item_prototypes:
             - uuid: 1d8284bfcc1348e4be1880fd11c022a9
               name: 'AP Name ({#SNMPINDEX})'
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.2.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPDescription[{#SNMPINDEX}]'
-              trends: '0'
+              history: 90d
               value_type: TEXT
+              trends: '0'
               description: 'AP Name'
               tags:
                 - tag: AP
@@ -332,8 +370,9 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.1.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPMacAddr[{#SNMPINDEX}]'
-              trends: '0'
+              history: 90d
               value_type: TEXT
+              trends: '0'
               description: 'AP Mac Address'
               tags:
                 - tag: AP
@@ -345,8 +384,9 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.4.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPModel[{#SNMPINDEX}]'
-              trends: '0'
+              history: 90d
               value_type: TEXT
+              trends: '0'
               description: 'Model name'
               tags:
                 - tag: AP
@@ -358,6 +398,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.9.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPRole[{#SNMPINDEX}]'
+              history: 90d
               description: 'AP role, master or member AP'
               valuemap:
                 name: 'AP Role'
@@ -378,6 +419,7 @@ zabbix_export:
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.3.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPStatus[{#SNMPINDEX}]'
               delay: 30s
+              history: 90d
               description: 'The connection status with Unleashed.'
               valuemap:
                 name: RuckusAPStatus
@@ -399,6 +441,7 @@ zabbix_export:
               type: SNMP_AGENT
               snmp_oid: '1.3.6.1.4.1.25053.1.15.2.1.1.2.1.1.6.6.{#SNMPINDEX}'
               key: 'ruckusUnleashedWLANAPUptime[{#SNMPINDEX}]'
+              history: 90d
               units: uptime
               description: 'Model name'
               preprocessing:
@@ -468,13 +511,6 @@ zabbix_export:
           item:
             host: 'Template SNMP Ruckus UnLeashed'
             key: ruckusUnleashedSystemStatsWLANTotalTxFail
-        - sortorder: '3'
-          color: BF00FF
-          yaxisside: RIGHT
-          calc_fnc: ALL
-          item:
-            host: 'Template SNMP Ruckus UnLeashed'
-            key: ruckusUnleashedSystemStatsWLANTotalTxRetry
     - uuid: 19e222ebf42642c8a84db59cf7f988ae
       name: 'Ping Graph'
       graph_items:

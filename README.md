@@ -1,5 +1,5 @@
 # Zabbix template for Ruckus Unleashed Access Points
-This template was tested on Ruckus R500 and R600 APs
+This template was tested on Ruckus R500 / R600 / R720 APs
 
 This template collect data with SNMP v2 agent
 
