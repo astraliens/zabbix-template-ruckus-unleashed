@@ -7,6 +7,10 @@ zabbix_export:
     - uuid: a19f1d3ddc234e06b4d7c9303fdbdb62
       template: 'Template SNMP Ruckus UnLeashed'
       name: 'Template SNMP Ruckus UnLeashed'
+      description: |
+        Monitoring Ruckus Unleashed APs via SNMP
+        
+        You can discuss this template or leave feedback on GitHub https://github.com/astraliens/zabbix-template-ruckus-unleashed
       groups:
         - name: Templates
       items:
@@ -489,6 +493,22 @@ zabbix_export:
             - value: '1'
               newvalue: Up
   graphs:
+    - uuid: 051d46f25e634de39b3d368495d64bf5
+      name: 'CPU Usage'
+      graph_items:
+        - color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsCPUUtil
+    - uuid: d49fd6c8551b42adbaa39a3e848f0d15
+      name: 'Memory Usage'
+      graph_items:
+        - color: 1A7C11
+          calc_fnc: ALL
+          item:
+            host: 'Template SNMP Ruckus UnLeashed'
+            key: ruckusUnleashedSystemStatsMemoryUtil
     - uuid: 3c09124df41a41afbd27551e47361f38
       name: 'Network Bandwidth'
       percent_left: '90'
